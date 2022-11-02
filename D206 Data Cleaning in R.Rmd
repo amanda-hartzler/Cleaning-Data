@@ -1,0 +1,281 @@
+---
+title: "R Notebook"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+```{r}
+#import libraries 
+library(dplyr)
+library(readr)
+library (visdat)
+library(superml)
+library(plyr)
+library(tidyverse)
+library(factoextra)
+
+#import data file & preview data 
+df <- read_csv('/Users/Amanda.Hartzler/Desktop/Data_Analytics_Masters/D206/churn_raw_data.csv')
+head(df)
+```
+```{r}
+#determine column names, non-null values, & types 
+str(df)
+```
+```{r}
+#determine if any rows are duplicated 
+duplicated(df)
+```
+```{r}
+#delete any duplicated rows
+df <- distinct(df)
+print(df)
+```
+```{r}
+#no duplicated values in dataset
+#determine which variables contain null values & how many null values
+ colSums(is.na(df))
+```
+```{r}
+#visualization of missing data
+vis_miss(df)
+```
+```{r}
+#Check each column containing null values that is a float or integer value. 
+#Determine skew, possible ouliers, and distribution. 
+#Children Histogram
+hist(df$Children, 
+     main = 'Children', 
+     xlab = 'Number of Children', 
+     border = 'blue', 
+     col = 'green', 
+     xlim = c(0, 10), 
+     breaks = 10)
+```
+```{r}
+#Age Histogram
+hist(df$Age)
+```
+```{r}
+#Income Histogram
+hist(df$Income)
+```
+```{r}
+#Tenure Histogram 
+hist(df$Tenure)
+```
+```{r}
+hist(df$Tenure)
+```
+```{r}
+#Children column is right skewed, therefore I will use the median to impute the data. 
+df$Children[is.na(df$Children)]<-median(df$Children,na.rm=TRUE)
+
+#verify the data was imputed 
+colSums(is.na(df))
+
+```
+```{r}
+#Check if the distribution of data was effected by the imputation of the median. 
+hist(df$Children)
+```
+```{r}
+#Age column has a uniform distribution, therefore I will use the mean to impute the data.
+df$Age[is.na(df$Age)]<-mean(df$Age,na.rm=TRUE)
+
+#verify the data was imputed 
+colSums(is.na(df))
+```
+```{r}
+#Check if the distribution of data was effected by the imputation of the mean. 
+hist(df$Age)
+```
+```{r}
+#Income column has is right skewed, therefore I will use the median to impute the data.
+df$Income[is.na(df$Income)]<-median(df$Income,na.rm=TRUE)
+
+#verify the data was imputed 
+colSums(is.na(df))
+```
+```{r}
+#Check if the distribution of data was effected by the imputation of the median. 
+hist(df$Income)
+```
+```{r}
+#Tenure column has a bimodal distribution, therefore I decided to use the median to impute the data. (Middleton, 2022a)  
+df$Tenure[is.na(df$Tenure)]<-median(df$Tenure,na.rm=TRUE)
+
+#verify the data was imputed 
+colSums(is.na(df))
+```
+```{r}
+#Check if the distribution of data was effected by the imputation of the mean. 
+hist(df$Tenure)
+```
+```{r}
+#Bandwidth_GB_Year column has a bimodal distribution, therefore I decided to use the median to impute the data.
+df$Bandwidth_GB_Year[is.na(df$Bandwidth_GB_Year)]<-median(df$Bandwidth_GB_Year,na.rm=TRUE)
+
+#verify the data was imputed 
+colSums(is.na(df))
+```
+```{r}
+#Check if the distribution of data was effected by the imputation of the mean. 
+hist(df$Bandwidth_GB_Year)
+```
+```{r}
+#Clean null values from object or text columns using the mode.
+#Techie column is text, therefore I will use the mode to impute the data.
+df$Techie[is.na(df$Techie)]<-mode(df$Techie)
+
+#verify the data was imputed 
+colSums(is.na(df))
+```
+```{r}
+#Phone column is text, therefore I will use the mode to impute the data.
+df$Phone[is.na(df$Phone)]<-mode(df$Phone)
+
+#verify the data was imputed 
+colSums(is.na(df))
+```
+```{r}
+#TechSupport column is text, therefore I will use the mode to impute the data.
+df$TechSupport[is.na(df$TechSupport)]<-mode(df$TechSupport)
+
+#verify the data was imputed 
+colSums(is.na(df))
+```
+```{r}
+```
+
+
+```{r}
+b <-boxplot(df$CaseOrder)
+```
+```{r}
+#Using Boxplots, check for outliers in each in each float or integer value column. 
+b <-boxplot(df$Zip, main = 'Zip')
+b <-boxplot(df$Lat, main = 'Lat')
+b <-boxplot(df$Lng, main = 'Lng')
+b <-boxplot(df$Population, main = 'Population')
+b <-boxplot(df$Children, main = 'Children')
+b <-boxplot(df$Age, main = 'Age')
+b <-boxplot(df$Income, main = 'Income')
+b <-boxplot(df$Outage_sec_perweek, main = 'Outage_sec_perweek')
+b <-boxplot(df$Email, main = 'Email')
+b <-boxplot(df$Contacts, main = 'Contacts')
+b <-boxplot(df$Yearly_equip_failure, main = 'Yearly_equip_failure')
+b <-boxplot(df$Tenure, main = 'Tenure')
+b <-boxplot(df$MonthlyCharge, main = 'MonthlyCharge')
+b <-boxplot(df$Bandwidth_GB_Year, main = 'Bandwidth_GB_Year')
+b <-boxplot(df$item1, main = 'item1')
+b <-boxplot(df$item2, main = 'item2')
+b <-boxplot(df$item3, main = 'item3')
+b <-boxplot(df$item4, main = 'item4')
+b <-boxplot(df$item5, main = 'item5')
+b <-boxplot(df$item6, main = 'item6')
+b <-boxplot(df$item7, main = 'item7')
+b <-boxplot(df$item8, main = 'item8')
+```
+```{r}
+#Outliers found in Lat, Lng, Population, Children, Income, Outage_sec_perweek, Email, Contacts, Yearly_equip_failure, MonthlyCharge, item1, item2, item3, item4, item5, item6, item7, & item8 columns. 
+#Treating outliers: 
+max(df$Lat)
+min(df$Lat)
+```
+```{r}
+#Retain outliers in Lat (Incuding US territories, the min and max are within a valid range) (Bathman, 2018)
+max(df$Lng)
+min(df$Lng)
+```
+```{r}
+#Retain outliers in Lng (Incuding US territories, the min and max are within a valid range) (Bathman, 2018)
+summary(df$Population)
+```
+```{r}
+#Replace outlier population values > 27,000 
+#New York City, NY, has the most density population in the US. In New York the max population density is a little over 27,000 per square mile. Therefore the right skewed outliers are likely entry errors. (Planning-Population-NYC Population Facts - DCP, n.d.)
+df["Population"][df["Population"] >= 27000] <- 2931
+summary(df$Population)
+```
+```{r}
+#Check distribution of population data. 
+b <-boxplot(df$Population, main = 'Population')
+```
+```{r}
+#Check that the max income is within a reasonable range
+max(df$Income)
+
+#Check that the max and min outage_sec_perweek is within a reasonable range
+max(df$Outage_sec_perweek)
+min(df$Outage_sec_perweek)
+```
+```{r}
+#Retain outliers in Children (All values are possible children values)
+#Retain outliers in Income (All values are possible income values)
+summary(df$Outage_sec_perweek)
+```
+```{r}
+#Replace negative outliers in Outage_sec_perweek with median because you cannot have less than zero secons of outage
+df$Outage_sec_perweek[df$Outage_sec_perweek <0] <- 10.214231
+summary(df$Population)
+```
+```{r}
+b <-boxplot(df$Outage_sec_perweek, main = 'Outage_sec_perweek')
+```
+```{r}
+#Check that the MonthlyCharge income is within a reasonable range
+max(df$MonthlyCharge)
+```
+```{r}
+#Retain outliers in Email (All values are possible email values)
+#Retain outliers in Contacts (All values are possible contact values)
+#Retain outliers in Yearly_equip_failure (All values are possible equipment failure values)
+#Retain outliers in MonthlyCharge (All values are possible monthly charge values)
+#Retain outliers in all item answers (All values are possible values for each item answer)
+```
+```{r}
+#Re-expressing Categorical Variables (Middleton, 2022c)
+#Practice label encoding yes/no dichotomous binary columns. (By Great Learning Team -, 2022)
+lbl = LabelEncoder$new()
+df$Churn = lbl$fit_transform(df$Churn)
+print(df$Churn)
+```
+```{r}
+df$Techie = lbl$fit_transform(df$Techie)
+df$Port_modem = lbl$fit_transform(df$Port_modem)
+df$Phone = lbl$fit_transform(df$Phone)
+```
+```{r}
+#Practice Ordinal Encoding (Middleton, 2022c)
+#First find unique entiries in the education table. 
+print(unique(df$Education))
+print(length(unique(df$Education)))
+```
+```{r}
+edu.num <- revalue(x = df$Education, replace = c('No Schooling Completed'= 0, 'Nursery School to 8th Grade'= 1, '9th Grade to 12th Grade, No Diploma'= 2, 'GED or Alternative Credential'= 3, 'Regular High School Diploma'= 4, 'Some College, Less than 1 Year'= 5, 'Some College, 1 or More Years, No Degree'= 6, "Associate's Degree"= 7, 'Professional School Degree'= 8, "Bachelor's Degree"= 9, "Master's Degree"= 10, 'Doctorate Degree'= 11))
+df$Education_numeric <- as.numeric(edu.num)
+```
+```{r}
+#Check that Education_numeric was created correctly.
+unique(df$Education_numeric)
+```
+```{r}
+#Principal Component Analysis
+data.frame(colnames(df))
+```
+```{r}
+#Principal Component Analysis
+features <- df[,c(8, 9, 10, 11, 15, 16, 19, 23, 24, 25, 26, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52)]
+print(features)
+```
+```{r}
+df.pca<- prcomp(df[,c(8, 9, 10, 11, 15, 16, 19, 23, 24, 25, 26, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52)], center = TRUE, scale = TRUE)
+```
+```{r}
+df.pca$rotation
+```
+```{r}
+fviz_eig(df.pca, choice = "eigenvalue", addlabels = TRUE)
+```
+
